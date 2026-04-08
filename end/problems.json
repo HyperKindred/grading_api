@@ -1,0 +1,15 @@
+{
+  "test1": {
+    "id": "test1",
+    "title": "字符串连接（函数实现）",
+    "description": "分三行输入三个字符串，将它们中间加上一个空格后合成一个字符串输出。\n\n请实现函数 `concat_strings(a, b, c)`，接收三个字符串参数，返回用空格连接后的字符串。",
+    "difficulty": "easy",
+    "optimal_time_complexity": "O(n)",
+    "optimal_space_complexity": "O(1)",
+    "time_limit": 1,
+    "memory_limit": 256,
+    "test_public_path": "problems/test1/test_public.py",
+    "test_hidden_path": "problems/test1/test_hidden.py",
+    "reference_solution_path": "problems/test1/reference.py"
+  }
+}

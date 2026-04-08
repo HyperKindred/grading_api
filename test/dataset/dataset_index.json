@@ -1,0 +1,97 @@
+{
+  "samples": [
+    {
+      "id": "sample_01",
+      "category": "inefficiency",
+      "difficulty": "easy",
+      "problem_description": "两数之和：给定一个整数数组 nums 和一个整数目标值 target，请你在该数组中找出和为目标值 target 的那两个整数，并返回它们的数组下标。你可以假设每种输入只会对应一个答案。但是，数组中同一个元素在答案里不能重复出现。你可以按任意顺序返回答案。",
+      "student_code_path": "sample_01_inefficiency/student_code.py",
+      "reference_solution_path": "sample_01_inefficiency/reference_solution.py",
+      "test_cases_path": "sample_01_inefficiency/test_cases_simple.py",
+      "expert_feedback_path": "sample_01_inefficiency/expert_feedback.md",
+      "tags": [
+        "数组",
+        "哈希表",
+        "时间复杂度",
+        "算法优化"
+      ]
+    },
+    {
+      "id": "sample_02",
+      "category": "logic_error",
+      "difficulty": "easy",
+      "problem_description": "计算平均值：编写一个函数，接收一个数字列表，返回这些数字的平均值。需要处理空列表的情况。",
+      "student_code_path": "sample_02_logic_error/student_code.py",
+      "reference_solution_path": "sample_02_logic_error/reference_solution.py",
+      "test_cases_path": "sample_02_logic_error/test_cases.py",
+      "expert_feedback_path": "sample_02_logic_error/expert_feedback.md",
+      "tags": [
+        "边界条件",
+        "异常处理",
+        "防御性编程"
+      ]
+    },
+    {
+      "id": "sample_03",
+      "category": "syntax_error",
+      "difficulty": "easy",
+      "problem_description": "查找最大值：编写一个函数，接收一个数字列表，返回列表中的最大值。如果列表为空，返回None。",
+      "student_code_path": "sample_03_syntax_error/student_code.py",
+      "reference_solution_path": "sample_03_syntax_error/reference_solution.py",
+      "test_cases_path": "sample_03_syntax_error/test_cases.py",
+      "expert_feedback_path": "sample_03_syntax_error/expert_feedback.md",
+      "tags": [
+        "语法错误",
+        "边界条件",
+        "Python基础"
+      ]
+    },
+    {
+      "id": "sample_04",
+      "category": "runtime_error",
+      "difficulty": "easy",
+      "problem_description": "安全字典访问：编写一个函数，接收一个字典和键名，返回对应的值。如果键不存在，应该安全地处理而不是抛出异常。",
+      "student_code_path": "sample_04_runtime_error/student_code.py",
+      "reference_solution_path": "sample_04_runtime_error/reference_solution.py",
+      "test_cases_path": "sample_04_runtime_error/test_cases.py",
+      "expert_feedback_path": "sample_04_runtime_error/expert_feedback.md",
+      "tags": [
+        "运行时错误",
+        "字典操作",
+        "防御性编程",
+        "异常处理"
+      ]
+    },
+    {
+      "id": "sample_05",
+      "category": "edge_case",
+      "difficulty": "medium",
+      "problem_description": "获取中间元素：编写一个函数，接收一个列表，返回中间位置的元素。需要考虑空列表、单元素、偶数长度列表等边界情况。",
+      "student_code_path": "sample_05_edge_case/student_code.py",
+      "reference_solution_path": "sample_05_edge_case/reference_solution.py",
+      "test_cases_path": "sample_05_edge_case/test_cases.py",
+      "expert_feedback_path": "sample_05_edge_case/expert_feedback.md",
+      "tags": [
+        "边界条件",
+        "列表操作",
+        "索引错误"
+      ]
+    },
+    {
+      "id": "sample_06",
+      "category": "style_issue",
+      "difficulty": "easy",
+      "problem_description": "计算平均值和查找质数：实现两个函数：1）计算数字列表的平均值；2）查找小于等于给定限制的所有质数。注意代码的可读性和命名规范。",
+      "student_code_path": "sample_06_style_issue/student_code.py",
+      "reference_solution_path": "sample_06_style_issue/reference_solution.py",
+      "test_cases_path": "sample_06_style_issue/test_cases.py",
+      "expert_feedback_path": "sample_06_style_issue/expert_feedback.md",
+      "tags": [
+        "代码风格",
+        "命名规范",
+        "代码优化",
+        "可读性"
+      ]
+    }
+  ]
+}

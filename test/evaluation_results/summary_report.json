@@ -1,0 +1,120 @@
+{
+  "samples": [
+    {
+      "sample_id": "sample_01",
+      "summary": {
+        "model_count": 8,
+        "evaluation_status": "完成",
+        "llm_judge_top_model": "openai/gpt-4o",
+        "llm_judge_ranking": [
+          "openai/gpt-4o",
+          "qwen/qwen-plus",
+          "google/gemini-2.5-pro",
+          "z-ai/glm-4.7",
+          "minimax/minimax-m2.1",
+          "meta-llama/llama-3.3-70b-instruct",
+          "deepseek/deepseek-chat",
+          "anthropic/claude-3-5-sonnet"
+        ],
+        "objective_top_model": "qwen/qwen-plus",
+        "objective_top_score": 94.0,
+        "expert_top_model": "z-ai/glm-4.7",
+        "expert_top_similarity": 0.0706,
+        "recommended_model": "openai/gpt-4o"
+      },
+      "model_count": 8
+    },
+    {
+      "sample_id": "sample_02",
+      "summary": {
+        "model_count": 8,
+        "evaluation_status": "完成",
+        "llm_judge_top_model": "google/gemini-2.5-pro",
+        "llm_judge_ranking": [
+          "google/gemini-2.5-pro",
+          "qwen/qwen-plus"
+        ],
+        "objective_top_model": "qwen/qwen-plus",
+        "objective_top_score": 85.6,
+        "expert_top_model": "meta-llama/llama-3.3-70b-instruct",
+        "expert_top_similarity": 0.1349,
+        "recommended_model": "google/gemini-2.5-pro"
+      },
+      "model_count": 8
+    },
+    {
+      "sample_id": "sample_03",
+      "summary": {
+        "model_count": 8,
+        "evaluation_status": "完成",
+        "llm_judge_top_model": "google/gemini-2.5-pro",
+        "llm_judge_ranking": [
+          "google/gemini-2.5-pro",
+          "openai/gpt-4o"
+        ],
+        "objective_top_model": "qwen/qwen-plus",
+        "objective_top_score": 88.0,
+        "expert_top_model": "meta-llama/llama-3.3-70b-instruct",
+        "expert_top_similarity": 0.1695,
+        "recommended_model": "google/gemini-2.5-pro"
+      },
+      "model_count": 8
+    },
+    {
+      "sample_id": "sample_04",
+      "summary": {
+        "model_count": 8,
+        "evaluation_status": "完成",
+        "llm_judge_top_model": "openai/gpt-4o",
+        "llm_judge_ranking": [
+          "openai/gpt-4o",
+          "google/gemini-2.5-pro"
+        ],
+        "objective_top_model": "meta-llama/llama-3.3-70b-instruct",
+        "objective_top_score": 85.6,
+        "expert_top_model": "minimax/minimax-m2.1",
+        "expert_top_similarity": 0.1418,
+        "recommended_model": "openai/gpt-4o"
+      },
+      "model_count": 8
+    },
+    {
+      "sample_id": "sample_05",
+      "summary": {
+        "model_count": 8,
+        "evaluation_status": "完成",
+        "llm_judge_top_model": "minimax/minimax-m2.1",
+        "llm_judge_ranking": [
+          "minimax/minimax-m2.1",
+          "qwen/qwen-plus"
+        ],
+        "objective_top_model": "meta-llama/llama-3.3-70b-instruct",
+        "objective_top_score": 89.2,
+        "expert_top_model": "anthropic/claude-3-5-sonnet",
+        "expert_top_similarity": 0.1161,
+        "recommended_model": "minimax/minimax-m2.1"
+      },
+      "model_count": 8
+    },
+    {
+      "sample_id": "sample_06",
+      "summary": {
+        "model_count": 8,
+        "evaluation_status": "完成",
+        "llm_judge_top_model": "openai/gpt-4o",
+        "llm_judge_ranking": [
+          "openai/gpt-4o",
+          "anthropic/claude-3-5-sonnet"
+        ],
+        "objective_top_model": "openai/gpt-4o",
+        "objective_top_score": 85.6,
+        "expert_top_model": "anthropic/claude-3-5-sonnet",
+        "expert_top_similarity": 0.148,
+        "recommended_model": "openai/gpt-4o"
+      },
+      "model_count": 8
+    }
+  ],
+  "total_samples": 6,
+  "last_updated": "2025-12-27 23:43:25"
+}

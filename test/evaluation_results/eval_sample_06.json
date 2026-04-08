@@ -1,0 +1,339 @@
+{
+  "sample_id": "sample_06",
+  "context": {
+    "student_code": "def calc(lst):\n    # 代码风格问题：函数名不清晰，变量名随意\n    s = 0\n    c = 0\n    for x in lst:\n        s = s + x\n        c = c + 1\n    if c == 0:\n        return 0\n    a = s / c\n    return a\n\ndef FindPrimeNumbers(n):\n    # 更多风格问题：不一致的命名，魔法数字，冗余注释\n    primes = []\n    for num in range(2, n+1):\n        is_prime = True\n        for i in range(2, num):\n            if num % i == 0:\n                is_prime = False\n                break\n        if is_prime:\n            primes.append(num)\n    return primes\n",
+    "test_results": "测试退出码: 0\n标准输出:\n============================= test session starts =============================\nplatform win32 -- Python 3.10.9, pytest-9.0.2, pluggy-1.6.0 -- C:\\Users\\Kindred\\anaconda3\\python.exe\ncachedir: .pytest_cache\nmetadata: {'Python': '3.10.9', 'Platform': 'Windows-10-10.0.26100-SP0', 'Packages': {'pytest': '9.0.2', 'pluggy': '1.6.0'}, 'Plugins': {'anyio': '4.12.0', 'langsmith': '0.3.45', 'html': '4.1.1', 'metadata': '3.1.1'}}\nrootdir: C:\\Users\\Kindred\\AppData\\Local\\Temp\\tmp42nu6g2h\nplugin...",
+    "question_description": "计算平均值和查找质数：实现两个函数：1）计算数字列表的平均值；2）查找小于等于给定限制的所有质数。注意代码的可读性和命名规范。"
+  },
+  "model_feedbacks": {
+    "openai/gpt-4o": "【综合评分】\n\n正确性：5/5（代码功能完整，所有测试用例均通过，无错误实现。）\n\n效率：3/5（`calc`函数的效率是良好的，但`FindPrimeNumbers`函数可以通过优化算法来提高效率，如使用埃拉托斯特尼筛法。）\n\n可读性：3/5（代码命名不够清晰，尤其是函数和变量名。缺乏适当的注释来解释代码逻辑。）\n\n规范性：2/5（不符合Python PEP 8规范，函数命名不一致，缺乏注释和适当的空行。）\n\n【详细分析】\n- `calc`函数成功计算列表的平均值，但命名不清晰，`lst`、`s`、`c`等变量名不具备自解释性。\n- `FindPrimeNumbers`函数正确找到指定范围内...",
+    "deepseek/deepseek-chat": "代码：\n```python\ndef calc(lst):\n    # 代码风格问题：函数名不清晰，变量名随意\n    s = 0\n    c = 0\n    for x in lst:\n        s = s + x\n        c = c + 1\n    if c == 0:\n        return 0\n    a = s / c\n    return a\n\ndef FindPrimeNumbers(n):\n    # 更多风格问题：不一致的命名，魔法数字，冗余注释\n    primes = []\n    for num in range(2, n+1):\n        is...",
+    "qwen/qwen-plus": "代码：  \n```python\ndef calc(lst):\n    # 代码风格问题：函数名不清晰，变量名随意\n    s = 0\n    c = 0\n    for x in lst:\n        s = s + x\n        c = c + 1\n    if c == 0:\n        return 0\n    a = s / c\n    return a\n\ndef FindPrimeNumbers(n):\n    # 更多风格问题：不一致的命名，魔法数字，冗余注释\n    primes = []\n    for num in range(2, n+1):\n        ...",
+    "anthropic/claude-3-5-sonnet": "【综合评分】\n\n正确性：5/5（所有测试用例通过，功能实现正确）\n\n效率：3/5（FindPrimeNumbers函数效率较低，有优化空间）\n\n可读性：2/5（函数和变量命名不清晰，注释质量差）\n\n规范性：2/5（多处违反PEP 8规范）\n\n【详细分析】\n\n优点：\n1. 代码功能完整，测试用例全部通过\n2. 基本逻辑清晰，结构简单\n\n缺点：\n1. calc函数命名模糊，无法直观理解功能\n2. 变量命名（s, c, a）过于简单，不能表达实际含义\n3. FindPrimeNumbers使用驼峰命名，违反Python命名规范\n4. 素数判断算法效率较低，可优化\n5. 缺少函数文档字符串，注释价值不...",
+    "google/gemini-2.5-pro": "好的，作为一位经验丰富的编程导师，我将严格按照你要求的格式对你的代码进行分析和反馈。\n\n---\n\n【综合评分】\n\n正确性：5/5\n效率：2/5\n可读性：2/5\n规范性：2/5\n\n【详细分析】\n\n同学你好，很高兴看到你的代码。首先值得肯定的是，你的代码通过了所有的单元测试，这意味着在功能层面，它完全实现了预期的目标，并且正确处理了如空列表这样的边界情况。这是编程中最重要的一步，做得很好！\n\n然而，从代码质量的角度来看，还有很大的提升空间。我们可以从以下几个方面来审视：\n\n1.  **优点**:\n    *   **功能正确**：代码逻辑清晰，成功实现了计算平均值和寻找素数的功能。\n    *  ...",
+    "z-ai/glm-4.7": "【综合评分】\n\n正确性：5/5\n效率：2/5\n可读性：2/5\n规范性：2/5\n\n【详细分析】\n\n1.  **正确性**：代码逻辑正确，所有测试用例均通过。`calc` 函数正确处理了列表为空时的除零保护（返回0），`FindPrimeNumbers` 函数能正确筛选出指定范围内的质数。\n\n2.  **效率**：`calc` 函数的时间复杂度为 $O(n)$，已是最优。但 `FindPrimeNumbers` 函数存在严重的性能问题。其时间复杂度为 $O(n^2)$，因为判断质数时内层循环遍历到了 `num-1`。实际上，只需遍历到 `sqrt(num)` 即可，这将显著提升计算速度。对于较大的...",
+    "minimax/minimax-m2.1": "# 代码评审报告\n\n## 【综合评分】\n\n正确性：5/5\n效率：3/5\n可读性：2/5\n规范性：2/5\n\n## 【详细分析】\n\n### 代码优点\n\n**正确性方面**，两个函数都成功通过了全部4个测试用例。`calc()`函数正确处理了空列表边界情况，返回0而不是抛出异常；`FindPrimeNumbers()`函数能够准确找出指定范围内的所有质数，逻辑基本正确。代码的功能实现是可靠的。\n\n**逻辑完整性方面**，平均计算函数包含了对除零情况的保护，质数判断函数完整实现了试除法的核心逻辑，没有明显的逻辑漏洞或遗漏。\n\n### 主要问题\n\n**效率问题**：\n1. `calc()`函数使用手动循...",
+    "meta-llama/llama-3.3-70b-instruct": "代码：\n```python\ndef calc(lst):\n    # 代码风格问题：函数名不清晰，变量名随意\n    s = 0\n    c = 0\n    for x in lst:\n        s = s + x\n        c = c + 1\n    if c == 0:\n        return 0\n    a = s / c\n    return a\n\ndef FindPrimeNumbers(n):\n    # 更多风格问题：不一致的命名，魔法数字，冗余注释\n    primes = []\n    for num in range(2, n+1):\n        is..."
+  },
+  "objective_metrics": {
+    "openai/gpt-4o": {
+      "length_score": 40,
+      "structure_score": 30,
+      "keyword_coverage": 15.6,
+      "overall_score": 85.6,
+      "text_length": 864,
+      "structure_elements": 4,
+      "found_keywords": [
+        "时间复杂度",
+        "优化",
+        "算法",
+        "变量",
+        "函数",
+        "参数",
+        "错误",
+        "异常",
+        "测试",
+        "用例",
+        "效率",
+        "字符串",
+        "列表"
+      ],
+      "total_keywords": 25,
+      "has_code_block": 0,
+      "has_suggestions": 1,
+      "has_explanation": 0
+    },
+    "deepseek/deepseek-chat": {
+      "length_score": 35,
+      "structure_score": 30,
+      "keyword_coverage": 12.0,
+      "overall_score": 77.0,
+      "text_length": 2522,
+      "structure_elements": 6,
+      "found_keywords": [
+        "时间复杂度",
+        "空间复杂度",
+        "优化",
+        "算法",
+        "变量",
+        "函数",
+        "参数",
+        "测试",
+        "效率",
+        "列表"
+      ],
+      "total_keywords": 25,
+      "has_code_block": 1,
+      "has_suggestions": 1,
+      "has_explanation": 0
+    },
+    "qwen/qwen-plus": {
+      "length_score": 35,
+      "structure_score": 30,
+      "keyword_coverage": 15.6,
+      "overall_score": 80.6,
+      "text_length": 2374,
+      "structure_elements": 6,
+      "found_keywords": [
+        "时间复杂度",
+        "空间复杂度",
+        "优化",
+        "算法",
+        "循环",
+        "变量",
+        "函数",
+        "异常",
+        "测试",
+        "用例",
+        "效率",
+        "字符串",
+        "列表"
+      ],
+      "total_keywords": 25,
+      "has_code_block": 1,
+      "has_suggestions": 1,
+      "has_explanation": 0
+    },
+    "anthropic/claude-3-5-sonnet": {
+      "length_score": 40,
+      "structure_score": 30,
+      "keyword_coverage": 9.6,
+      "overall_score": 79.6,
+      "text_length": 1193,
+      "structure_elements": 6,
+      "found_keywords": [
+        "优化",
+        "算法",
+        "变量",
+        "函数",
+        "测试",
+        "用例",
+        "效率",
+        "字符串"
+      ],
+      "total_keywords": 25,
+      "has_code_block": 1,
+      "has_suggestions": 1,
+      "has_explanation": 0
+    },
+    "google/gemini-2.5-pro": {
+      "length_score": 35,
+      "structure_score": 30,
+      "keyword_coverage": 14.4,
+      "overall_score": 79.4,
+      "text_length": 2951,
+      "structure_elements": 6,
+      "found_keywords": [
+        "时间复杂度",
+        "优化",
+        "算法",
+        "循环",
+        "变量",
+        "函数",
+        "错误",
+        "测试",
+        "边界",
+        "效率",
+        "字符串",
+        "列表"
+      ],
+      "total_keywords": 25,
+      "has_code_block": 1,
+      "has_suggestions": 1,
+      "has_explanation": 1
+    },
+    "z-ai/glm-4.7": {
+      "length_score": 40,
+      "structure_score": 30,
+      "keyword_coverage": 14.4,
+      "overall_score": 84.4,
+      "text_length": 852,
+      "structure_elements": 4,
+      "found_keywords": [
+        "时间复杂度",
+        "循环",
+        "变量",
+        "函数",
+        "参数",
+        "返回值",
+        "测试",
+        "用例",
+        "效率",
+        "性能",
+        "字符串",
+        "列表"
+      ],
+      "total_keywords": 25,
+      "has_code_block": 0,
+      "has_suggestions": 1,
+      "has_explanation": 1
+    },
+    "minimax/minimax-m2.1": {
+      "length_score": 35,
+      "structure_score": 30,
+      "keyword_coverage": 16.8,
+      "overall_score": 81.8,
+      "text_length": 2122,
+      "structure_elements": 5,
+      "found_keywords": [
+        "时间复杂度",
+        "优化",
+        "算法",
+        "循环",
+        "变量",
+        "函数",
+        "参数",
+        "异常",
+        "测试",
+        "用例",
+        "边界",
+        "效率",
+        "字符串",
+        "列表"
+      ],
+      "total_keywords": 25,
+      "has_code_block": 1,
+      "has_suggestions": 1,
+      "has_explanation": 0
+    },
+    "meta-llama/llama-3.3-70b-instruct": {
+      "length_score": 35,
+      "structure_score": 30,
+      "keyword_coverage": 14.4,
+      "overall_score": 79.4,
+      "text_length": 2120,
+      "structure_elements": 6,
+      "found_keywords": [
+        "时间复杂度",
+        "空间复杂度",
+        "优化",
+        "算法",
+        "循环",
+        "变量",
+        "函数",
+        "错误",
+        "异常",
+        "测试",
+        "用例",
+        "效率"
+      ],
+      "total_keywords": 25,
+      "has_code_block": 1,
+      "has_suggestions": 1,
+      "has_explanation": 0
+    }
+  },
+  "llm_evaluation": {
+    "evaluations": {
+      "openai/gpt-4o": {
+        "scores": {
+          "诊断准确性": 5,
+          "建议实用性": 5,
+          "解释教学性": 5,
+          "格式规范性": 5,
+          "综合教育价值": 5
+        },
+        "comments": "该模型全面分析了代码的正确性、效率、可读性和规范性，并提供了具体可行的优化建议。解释清晰且符合教学目的，格式规范，整体反馈非常有帮助。"
+      },
+      "deepseek/deepseek-chat": {
+        "scores": {
+          "诊断准确性": 5,
+          "建议实用性": 4,
+          "解释教学性": 4,
+          "格式规范性": 4,
+          "综合教育价值": 4
+        },
+        "comments": "模型准确指出了代码的主要问题，并提供了一些实用的建议。解释较为清晰，但在教学性上稍显不足。格式较规范，整体反馈有一定帮助。"
+      },
+      "qwen/qwen-plus": {
+        "scores": {
+          "诊断准确性": 5,
+          "建议实用性": 4,
+          "解释教学性": 4,
+          "格式规范性": 4,
+          "综合教育价值": 4
+        },
+        "comments": "模型准确诊断了代码问题，并提出了一些实用的修改建议。解释较为清晰，但在教学性上可以进一步加强。格式较规范，整体反馈有一定帮助。"
+      },
+      "anthropic/claude-3-5-sonnet": {
+        "scores": {
+          "诊断准确性": 5,
+          "建议实用性": 5,
+          "解释教学性": 5,
+          "格式规范性": 5,
+          "综合教育价值": 5
+        },
+        "comments": "模型提供了全面的分析和具体的修改建议，解释清晰且具有教学意义。格式规范，整体反馈非常有帮助。"
+      },
+      "google/gemini-2.5-pro": {
+        "scores": {
+          "诊断准确性": 5,
+          "建议实用性": 5,
+          "解释教学性": 5,
+          "格式规范性": 5,
+          "综合教育价值": 5
+        },
+        "comments": "模型提供了详细的分析和具体的修改建议，解释清晰且具有教学意义。格式规范，整体反馈非常有帮助。"
+      },
+      "z-ai/glm-4.7": {
+        "scores": {
+          "诊断准确性": 5,
+          "建议实用性": 4,
+          "解释教学性": 4,
+          "格式规范性": 4,
+          "综合教育价值": 4
+        },
+        "comments": "模型准确诊断了代码问题，并提出了一些实用的修改建议。解释较为清晰，但在教学性上可以进一步加强。格式较规范，整体反馈有一定帮助。"
+      },
+      "minimax/minimax-m2.1": {
+        "scores": {
+          "诊断准确性": 5,
+          "建议实用性": 5,
+          "解释教学性": 5,
+          "格式规范性": 5,
+          "综合教育价值": 5
+        },
+        "comments": "模型提供了全面的分析和具体的修改建议，解释清晰且具有教学意义。格式规范，整体反馈非常有帮助。"
+      },
+      "meta-llama/llama-3.3-70b-instruct": {
+        "scores": {
+          "诊断准确性": 4,
+          "建议实用性": 3,
+          "解释教学性": 3,
+          "格式规范性": 3,
+          "综合教育价值": 3
+        },
+        "comments": "模型指出了一些代码问题，但建议的实用性和解释的清晰度有待提高。格式不够规范，整体反馈帮助有限。"
+      }
+    },
+    "ranking": [
+      "openai/gpt-4o",
+      "anthropic/claude-3-5-sonnet"
+    ],
+    "summary": "openai/gpt-4o和anthropic/claude-3-5-sonnet提供了最全面和具体的反馈，诊断准确，建议实用，解释清晰，格式规范，具有很高的教育价值。其他模型也提供了有价值的反馈，但在某些方面略有不足。"
+  },
+  "expert_similarities": {
+    "openai/gpt-4o": 0.0594,
+    "deepseek/deepseek-chat": 0.1061,
+    "qwen/qwen-plus": 0.1346,
+    "anthropic/claude-3-5-sonnet": 0.148,
+    "google/gemini-2.5-pro": 0.1459,
+    "z-ai/glm-4.7": 0.1061,
+    "minimax/minimax-m2.1": 0.1157,
+    "meta-llama/llama-3.3-70b-instruct": 0.1093
+  },
+  "summary": {
+    "model_count": 8,
+    "evaluation_status": "完成",
+    "llm_judge_top_model": "openai/gpt-4o",
+    "llm_judge_ranking": [
+      "openai/gpt-4o",
+      "anthropic/claude-3-5-sonnet"
+    ],
+    "objective_top_model": "openai/gpt-4o",
+    "objective_top_score": 85.6,
+    "expert_top_model": "anthropic/claude-3-5-sonnet",
+    "expert_top_similarity": 0.148,
+    "recommended_model": "openai/gpt-4o"
+  }
+}
