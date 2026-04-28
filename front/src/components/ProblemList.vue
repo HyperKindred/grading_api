@@ -1,6 +1,6 @@
 <template>
   <div class="problem-list">
-    <h2>📋 题目列表</h2>
+    <h2>题目列表</h2>
     <ul>
       <li v-for="problem in problems" :key="problem.id">
         <router-link :to="`/problem/${problem.id}`">

@@ -5,7 +5,7 @@ import tempfile
 import json
 from pathlib import Path
 from typing import Dict, Optional, List, Any
-
+import docker
 class CodeGrader:
     """通用代码执行与评分器（支持多文件，从 problems.json 加载题目）"""
     
@@ -20,6 +20,18 @@ class CodeGrader:
         self.project_root = Path(__file__).parent.absolute()
         self.problems_file = self.project_root / problems_file
         self.problems = self._load_problems()
+        if self.use_docker:
+            try:
+                self.docker_client = docker.from_env()
+                # 测试连接
+                self.docker_client.ping()
+                print("Docker 连接成功")
+            except Exception as e:
+                print(f"Docker 连接失败，将回退到本地运行: {e}")
+                self.use_docker = False
+                self.docker_client = None
+        else:
+            self.docker_client = None
         
     def _load_problems(self) -> Dict[str, Any]:
         """加载题目元数据"""
@@ -87,7 +99,8 @@ class CodeGrader:
         """
         执行多文件测试，返回结构化结果
         """
-        with tempfile.TemporaryDirectory() as temp_dir:
+        project_drive = str(self.project_root)[:3]
+        with tempfile.TemporaryDirectory(dir=project_drive) as temp_dir:
             temp_path = Path(temp_dir)
             
             # 写入所有文件
@@ -131,13 +144,20 @@ class CodeGrader:
             return result
     
     def _run_pytest(self, test_file: Path, cwd: str, env: Dict) -> str:
-        """运行 pytest 并返回标准输出+错误"""
+        """运行 pytest，支持 Docker 沙箱或本地"""
+        if self.use_docker and self.docker_client:
+            return self._run_pytest_in_docker(test_file, cwd, env)
+        else:
+            return self._run_pytest_local(test_file, cwd, env)
+        
+    def _run_pytest_local(self, test_file: Path, cwd: str, env: Dict) -> str:
+        """原有本地运行逻辑"""
         try:
             proc = subprocess.run(
                 [sys.executable, "-m", "pytest", str(test_file), "-v", "--tb=short"],
                 capture_output=True,
                 text=True,
-                timeout=30,  # 可根据需要调整
+                timeout=30,
                 cwd=cwd,
                 env=env
             )
@@ -146,6 +166,37 @@ class CodeGrader:
             return "错误：测试运行超时"
         except Exception as e:
             return f"运行测试时发生异常：{e}"
+
+    def _run_pytest_in_docker(self, test_file: Path, cwd: str, env: Dict) -> str:
+        rel_path = test_file.relative_to(Path(cwd))
+        container_test_path = f"/app/{rel_path.as_posix()}"
+        host_dir = str(Path(cwd).resolve())
+        try:
+            container = self.docker_client.containers.run(
+                image="code-grader",
+                command=["pytest", container_test_path, "-v", "--tb=short"],
+                volumes={host_dir: {"bind": "/app", "mode": "ro"}},
+                mem_limit="512m",
+                nano_cpus=int(1e9),
+                network_disabled=True,
+                read_only=True,
+                tmpfs={"/tmp": "rw,noexec,nosuid,size=64m"},
+                detach=True,      # 关键：后台运行
+                remove=False,     # 不自动删除
+            )
+            # 等待容器结束，超时 30 秒
+            result = container.wait(timeout=30)
+            # 获取日志
+            output = container.logs(stdout=True, stderr=True).decode('utf-8')
+            container.remove()
+            return output
+        except docker.errors.APIError as e:
+            # 超时也会抛出 APIError
+            return f"Docker 执行错误: {e}"
+        except docker.errors.ImageNotFound:
+            return "错误：Docker 镜像 code-grader 不存在"
+        except Exception as e:
+            return f"运行测试异常: {e}"
     
     def _parse_pytest_output(self, output: str) -> Dict[str, Any]:
         """解析 pytest 输出，提取通过数和总数"""

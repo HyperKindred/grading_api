@@ -11,5 +11,35 @@
     "test_public_path": "problems/test1/test_public.py",
     "test_hidden_path": "problems/test1/test_hidden.py",
     "reference_solution_path": "problems/test1/reference.py"
+  },
+  "test2": {
+    "id": "test2",
+    "title": "计算圆的面积",
+    "description": "输入圆的半径，计算圆的面积。\n\n**要求：**\n1. 输入的半径可以为浮点数。\n2. 圆周率使用 3.14159。\n3. 输出结果保留两位小数（使用字符串的 format 方法保留两位小数）。\n\n**函数签名：** `def circle_area(radius: float) -> float:`\n返回计算出的面积（无需格式化，直接返回数值）。",
+    "difficulty": "easy",
+    "optimal_time_complexity": "O(1)",
+    "optimal_space_complexity": "O(1)",
+    "test_public_path": "problems/test2/test_public.py",
+    "test_hidden_path": "problems/test2/test_hidden.py"
+  },
+  "test3": {
+    "id": "test3",
+    "title": "反转两位正整数",
+    "description": "输入一个两位的正整数 N，反转输出该整数。\n\n**要求：**\n1. 输入为两位正整数（10 ≤ N ≤ 99）。\n2. 反转后若十位为0，则输出个位数（如 20 → 2）。\n3. 函数签名：`def reverse_two_digit(n: int) -> int:`\n返回反转后的整数。",
+    "difficulty": "easy",
+    "optimal_time_complexity": "O(1)",
+    "optimal_space_complexity": "O(1)",
+    "test_public_path": "problems/test3/test_public.py",
+    "test_hidden_path": "problems/test3/test_hidden.py"
+  },
+  "test4": {
+    "id": "test4",
+    "title": "海伦公式求三角形面积",
+    "description": "输入三角形的三条边长，使用海伦公式计算三角形的面积。\n\n**要求：**\n1. 一条 input 语句实现三条边长的输入，输入时三条边长用英文逗号隔开（例如：3,4,5）。\n2. 假设输入的三条边长一定能构成三角形，不考虑异常情况。\n3. 输出结果保留两位小数（使用字符串的 format 方法保留两位小数）。\n\n**函数签名：** `def triangle_area(a: float, b: float, c: float) -> float:`\n返回计算出的面积（无需格式化，直接返回数值）。\n\n**提示：** 海伦公式：s = (a+b+c)/2, area = sqrt(s(s-a)(s-b)(s-c))",
+    "difficulty": "easy",
+    "optimal_time_complexity": "O(1)",
+    "optimal_space_complexity": "O(1)",
+    "test_public_path": "problems/test4/test_public.py",
+    "test_hidden_path": "problems/test4/test_hidden.py"
   }
 }

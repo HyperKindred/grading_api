@@ -5,23 +5,32 @@ from grader import CodeGrader
 from fastapi.middleware.cors import CORSMiddleware
 from llm_client import LLMClient
 import asyncio
+import json
 from contextlib import asynccontextmanager
+from pydantic import BaseModel
+from db_config import get_db_connection
+from db_utils import save_or_update_submission
 app = FastAPI(title="编程作业智能评价系统")
+from typing import Dict
 
-# 初始化代码执行器
-grader = CodeGrader(problems_file='problems.json')
+grader = CodeGrader(problems_file='problems.json', use_docker=True)
 llm_client = LLMClient()
 MODELS = ["deepseek/deepseek-coder", "qwen/qwen-plus", "openai/gpt-4o"]
 class CodeSubmission(BaseModel):
     problem_id: str
     code: str
-
+    student_id: int
+class LoginRequest(BaseModel):
+    user_id: int
+class UpdateSubmissionRequest(BaseModel):
+    problem_id: str
+    student_id: int
+    scores: Dict[str, float]   # 例如 {"correctness": 45, "normativity": 18, ...}
+    feedback: str
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # 启动时执行（可在此处初始化资源）
     print("🚀 应用启动，资源初始化完成")
     yield
-    # 关闭时执行
     print("🛑 应用关闭，清理资源...")
     await llm_client.close()
     print("✅ 资源清理完成")
@@ -38,12 +47,12 @@ app.add_middleware(
 
 @app.post("/grade")
 async def grade_code(submission: CodeSubmission):
-    # 1. 运行测试
+
     test_result = grader.run_tests_for_problem(submission.problem_id, submission.code)
     if "error" in test_result:
         raise HTTPException(status_code=400, detail=test_result["error"])
     
-    # 2. 正确性评分（公开测试占30%，隐藏占70%）
+    # 正确性评分
     public = test_result['public']
     hidden = test_result['hidden']
     public_score = (public['passed'] / public['total']) * 10 if public['total'] > 0 else 0
@@ -51,7 +60,7 @@ async def grade_code(submission: CodeSubmission):
     correctness_raw = public_score * 0.3 + hidden_score * 0.7  # 0-10
     correctness = correctness_raw * 5  # 转为50分制
 
-    # 3. 规范性评分（Pylint）
+    # 规范性评分
     pylint_issues = grader.get_pylint_issues(submission.code)
     pylint_issue_count = len(pylint_issues)
     normativity_raw = max(0, 10 - pylint_issue_count * 0.5)   # 手动计算得分
@@ -63,31 +72,30 @@ async def grade_code(submission: CodeSubmission):
     else:
         pylint_details = "无"
 
-     # 准备测试摘要（用于效率评分的参考）
+
     test_summary = f"公开测试: {public['passed']}/{public['total']} 通过; 隐藏测试: {hidden['passed']}/{hidden['total']} 通过"
 
-    # 获取题目元数据（必须在调用效率评分之前）
+
     problem_meta = grader.problems.get(submission.problem_id)
     optimal_time = problem_meta.get("optimal_time_complexity", "O(n)") if problem_meta else "O(n)"
     optimal_space = problem_meta.get("optimal_space_complexity", "O(1)") if problem_meta else "O(1)"
 
-    # 并发获取效率评分
+    # 效率评分
     eff_task = llm_client.get_efficiency_score_async(
         submission.code, test_summary, MODELS,
         optimal_time=optimal_time,
         optimal_space=optimal_space
     )
+    # 可读性评分
     read_task = llm_client.get_readability_score_async(submission.code, MODELS)
     eff_result, read_result = await asyncio.gather(eff_task, read_task)
 
-    efficiency_raw = eff_result['score']   # 0-10
-    efficiency = efficiency_raw * 2        # 转为20分制
+    efficiency_raw = eff_result['score']   
+    efficiency = efficiency_raw * 2        
 
-    # 可读性暂时保留默认值，后续再实现
     readability_raw = read_result['score']
-    readability = readability_raw          # 0-10
+    readability = readability_raw          
 
-    # 计算总分
     total = correctness + normativity + efficiency + readability
 
     efficiency_analyses = eff_result['all_analyses']   
@@ -143,7 +151,20 @@ async def grade_code(submission: CodeSubmission):
 ...
 """)
     final_feedback = await llm_client.get_combined_feedback(final_prompt, model="deepseek/deepseek-chat")
-
+    scores_dict = {
+        "correctness": round(correctness, 2),
+        "normativity": round(normativity, 2),
+        "efficiency": round(efficiency, 2),
+        "readability": round(readability, 2),
+        "total": round(total, 2)
+    }
+    save_or_update_submission(
+        problem_id=submission.problem_id,
+        student_id=submission.student_id,
+        code=submission.code,
+        scores_dict=scores_dict,
+        feedback=final_feedback
+    )
     return {
         "problem_id": submission.problem_id,
         "test_results": test_result,
@@ -175,7 +196,6 @@ async def get_problem(problem_id: str):
     problem = grader.problems.get(problem_id)
     if not problem:
         raise HTTPException(status_code=404, detail="题目不存在")
-    # 只返回元数据，不返回测试用例路径
     return {
         "id": problem_id,
         "title": problem.get("title", ""),
@@ -187,3 +207,99 @@ async def get_problem(problem_id: str):
 async def root():
     return {"message": "智能代码批改系统 API 运行中"}
 
+@app.post("/login")
+async def login(req: LoginRequest):
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT id, role, sid, name FROM users WHERE id = %s", (req.user_id,))
+        user = cursor.fetchone()
+        if not user:
+            raise HTTPException(status_code=404, detail="用户不存在")
+        if user['role'] == 'teacher':
+            # 查询所有学生列表
+            cursor.execute("SELECT id, sid, name FROM users WHERE role = 'student'")
+            students = cursor.fetchall()
+            return {"user": user, "students": students}
+        else:
+            return {"user": user}
+        
+@app.get("/api/users")
+async def get_all_users():
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT id, role, sid, name FROM users ORDER BY role, id")
+        users = cursor.fetchall()
+        return users
+    
+@app.get("/api/submission")
+async def get_submission(problem_id: str, student_id: int):
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute(
+            "SELECT code, scores_json, feedback, tchange FROM submissions "
+            "WHERE problem_id = %s AND student_id = %s",
+            (problem_id, student_id)
+        )
+        row = cursor.fetchone()
+        if row:
+            return {
+                "code": row["code"],
+                "scores": json.loads(row["scores_json"]),
+                "feedback": row["feedback"],
+                "tchange": row["tchange"] == 1
+            }
+        return None
+    
+@app.post("/api/mark_read")
+async def mark_tchange_read(problem_id: str, student_id: int):
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute(
+            "UPDATE submissions SET tchange = 0 WHERE problem_id = %s AND student_id = %s",
+            (problem_id, student_id)
+        )
+        conn.commit()
+    return {"status": "ok"}
+
+@app.get("/api/teacher/submissions")
+async def get_teacher_submissions(problem_id: str):
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT u.id as student_id, u.name, u.sid,
+                   s.scores_json, s.feedback, s.schange, s.tchange, s.code
+            FROM submissions s
+            JOIN users u ON s.student_id = u.id
+            WHERE s.problem_id = %s
+            ORDER BY u.sid
+        """, (problem_id,))
+        rows = cursor.fetchall()
+        result = []
+        for row in rows:
+            scores = json.loads(row["scores_json"])
+            result.append({
+                "student_id": row["student_id"],
+                "name": row["name"],
+                "sid": row["sid"],
+                "scores": scores,
+                "feedback": row["feedback"],
+                "schange": row["schange"] == 1,
+                "tchange": row["tchange"] == 1,
+                "code": row["code"]
+            })
+        return result
+@app.post("/api/teacher/update_submission")
+async def update_submission(req: UpdateSubmissionRequest):
+    scores_json = json.dumps(req.scores)
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+        # 更新 submissions 表，设置 tchange=1, schange=0（教师已读）
+        cursor.execute("""
+            UPDATE submissions
+            SET scores_json = %s, feedback = %s, tchange = 1, schange = 0
+            WHERE problem_id = %s AND student_id = %s
+        """, (scores_json, req.feedback, req.problem_id, req.student_id))
+        if cursor.rowcount == 0:
+            raise HTTPException(status_code=404, detail="提交记录不存在")
+        conn.commit()
+    return {"status": "ok"}
