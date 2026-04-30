@@ -55,26 +55,41 @@
   <el-dialog v-model="detailVisible" :title="`${currentStudent?.name} - 提交详情`" width="70%" destroy-on-close>
     <div v-if="currentStudent">
       <h4>学生代码</h4>
-      <pre style="background:#f5f5f5; padding:10px; overflow:auto;">{{ currentStudent.code }}</pre>
+      <div class="code-viewer" v-html="highlightedCode"></div>
+
       <h4>评分修改</h4>
-      <el-form :model="editScores" label-width="80px">
-        <el-form-item label="正确性">
-          <el-input-number v-model="editScores.correctness" :min="0" :max="50" />
-        </el-form-item>
-        <el-form-item label="规范性">
-          <el-input-number v-model="editScores.normativity" :min="0" :max="20" />
-        </el-form-item>
-        <el-form-item label="效率">
-          <el-input-number v-model="editScores.efficiency" :min="0" :max="20" />
-        </el-form-item>
-        <el-form-item label="可读性">
-          <el-input-number v-model="editScores.readability" :min="0" :max="10" />
-        </el-form-item>
+      <el-form :model="editScores" label-width="60px" label-position="left">
+        <el-row :gutter="12">
+          <el-col :span="6">
+            <el-form-item label="正确性">
+              <el-input-number v-model="editScores.correctness" :min="0" :max="50" controls-position="right"
+                style="width: 100%;" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="规范性">
+              <el-input-number v-model="editScores.normativity" :min="0" :max="20" controls-position="right"
+                style="width: 100%;" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="效率">
+              <el-input-number v-model="editScores.efficiency" :min="0" :max="20" controls-position="right"
+                style="width: 100%;" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="可读性">
+              <el-input-number v-model="editScores.readability" :min="0" :max="10" controls-position="right"
+                style="width: 100%;" />
+            </el-form-item>
+          </el-col>
+        </el-row>
         <el-form-item label="总分">
-          <span>{{ computedTotal }}</span>
+          <span style="font-weight: bold; font-size: 1.2em;">{{ computedTotal }}</span>
         </el-form-item>
         <el-form-item label="评语">
-          <el-input v-model="editFeedback" type="textarea" rows="6" />
+          <el-input v-model="editFeedback" type="textarea" rows="10" placeholder="可在此编辑评语（支持Markdown）" />
         </el-form-item>
       </el-form>
     </div>
@@ -90,7 +105,13 @@ import { ref, onMounted, watch, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { getProblem, getTeacherSubmissions, updateTeacherSubmission } from '../api'
 import { ElMessage } from 'element-plus'
-
+import hljs from 'highlight.js'
+import 'highlight.js/styles/vs2015.css'
+import { marked } from 'marked'
+marked.setOptions({
+  gfm: true,
+  breaks: true
+})
 const route = useRoute()
 const problemId = computed(() => route.params.id)
 
@@ -132,7 +153,18 @@ const refresh = () => {
   fetchSubmissions()
 }
 
-const formattedDescription = computed(() => problem.value.description?.replace(/\n/g, '<br>') || '')
+const formattedDescription = computed(() => {
+  if (!problem.value.description) return ''
+  return marked(problem.value.description, { breaks: true })
+})
+
+// 高亮代码（移除外层多余间距）
+const highlightedCode = computed(() => {
+  if (!currentStudent.value?.code) return ''
+  const code = currentStudent.value.code
+  const highlighted = hljs.highlight(code, { language: 'python' }).value
+  return `<pre><code class="hljs language-python">${highlighted}</code></pre>`
+})
 
 // 计算总分
 const computedTotal = computed(() => {
@@ -159,7 +191,6 @@ const saveChanges = async () => {
     )
     ElMessage.success('保存成功')
     detailVisible.value = false
-    // 刷新列表
     await fetchSubmissions()
   } catch (err) {
     console.error(err)
@@ -172,7 +203,6 @@ onMounted(() => {
   fetchSubmissions()
 })
 
-// 监听路由变化重新加载
 watch(problemId, () => {
   fetchProblem()
   fetchSubmissions()
@@ -185,10 +215,75 @@ watch(problemId, () => {
   line-height: 1.6;
   font-size: 16px;
 }
+
 .el-row {
   height: 100%;
 }
+
 .el-col {
   height: 100%;
+}
+
+/* 代码显示区域样式 - 优化内外边距和滚动 */
+.code-viewer {
+  background: #1e1e1e;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  overflow-x: auto;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.code-viewer pre {
+  margin: 0;
+  padding: 16px;
+  font-family: 'Fira Code', 'Cascadia Code', 'Courier New', monospace;
+  font-size: 13px;
+  line-height: 1.5;
+  background: transparent;
+  color: #d4d4d4;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.code-viewer code {
+  font-family: inherit;
+}
+
+/* 评分修改表单布局优化 */
+.el-form .el-row {
+  margin-bottom: 0;
+}
+
+.el-form-item {
+  margin-bottom: 18px;
+}
+
+.el-form-item__label {
+  padding-right: 4px !important;
+}
+
+.description :deep(h1),
+.description :deep(h2),
+.description :deep(h3) {
+  margin-top: 0;
+}
+.description :deep(p) {
+  margin: 0 0 10px;
+}
+.description :deep(ul),
+.description :deep(ol) {
+  padding-left: 20px;
+  margin: 5px 0;
+}
+.description :deep(strong) {
+  font-weight: bold;
+  color: #409eff;
+}
+.description :deep(code) {
+  background: #f4f4f4;
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-family: monospace;
 }
 </style>

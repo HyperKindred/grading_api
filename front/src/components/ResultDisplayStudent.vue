@@ -40,8 +40,20 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, watch, nextTick } from 'vue'
 import { marked } from 'marked'
+import hljs from 'highlight.js'
+import 'highlight.js/styles/vs2015.css'   // 深色主题，与教师端代码样式匹配
+
+// 配置 marked，使用 highlight.js 高亮代码块
+marked.setOptions({
+  highlight: function(code, lang) {
+    if (lang && hljs.getLanguage(lang)) {
+      return hljs.highlight(code, { language: lang }).value
+    }
+    return hljs.highlightAuto(code).value
+  }
+})
 
 const props = defineProps(['result'])
 
@@ -49,6 +61,16 @@ const renderedFeedback = computed(() => {
   if (!props.result?.feedback) return ''
   return marked(props.result.feedback, { breaks: true })
 })
+
+// 由于反馈内容通过 v-html 插入，插入后 DOM 已渲染，但 marked 内部已经通过 highlight 生成了高亮 HTML，无需额外操作。
+// 如果需要动态高亮（例如反馈内容更新后），可以 watch 并调用 hljs.highlightAll()
+watch(renderedFeedback, () => {
+  nextTick(() => {
+    document.querySelectorAll('.feedback-content pre code').forEach((block) => {
+      hljs.highlightElement(block)
+    })
+  })
+}, { immediate: true })
 </script>
 
 <style scoped>

@@ -12,6 +12,7 @@
     "@guolao/vue-monaco-editor": "^1.6.0",
     "axios": "^1.13.6",
     "element-plus": "^2.13.5",
+    "highlight.js": "^11.11.1",
     "marked": "^18.0.2",
     "monaco-editor": "^0.55.1",
     "pinia": "^3.0.4",

@@ -63,7 +63,11 @@ import MonacoEditor from '@guolao/vue-monaco-editor'
 import { getProblem, submitCode, getSubmission, markRead } from '../api'
 import ResultDisplayStudent from '../components/ResultDisplayStudent.vue'
 import { ElMessage } from 'element-plus'
-
+import { marked } from 'marked'
+marked.setOptions({
+  gfm: true,
+  breaks: true
+})
 const route = useRoute()
 const user = JSON.parse(localStorage.getItem('user') || '{}')
 const studentId = user.id
@@ -83,7 +87,10 @@ const editorOptions = {
   scrollBeyondLastLine: false,
 }
 
-const formattedDescription = computed(() => problem.value.description?.replace(/\n/g, '<br>') || '')
+const formattedDescription = computed(() => {
+  if (!problem.value.description) return ''
+  return marked(problem.value.description, { breaks: true })
+})
 
 let active = true  // 用于避免组件卸载后更新状态
 
@@ -173,5 +180,28 @@ const onDialogClosed = async () => {
 }
 .el-col {
   height: 100%;
+}
+.description :deep(h1),
+.description :deep(h2),
+.description :deep(h3) {
+  margin-top: 0;
+}
+.description :deep(p) {
+  margin: 0 0 10px;
+}
+.description :deep(ul),
+.description :deep(ol) {
+  padding-left: 20px;
+  margin: 5px 0;
+}
+.description :deep(strong) {
+  font-weight: bold;
+  color: #409eff;
+}
+.description :deep(code) {
+  background: #f4f4f4;
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-family: monospace;
 }
 </style>

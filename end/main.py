@@ -102,7 +102,7 @@ async def grade_code(submission: CodeSubmission):
     readability_analyses = read_result['all_analyses']
 
     final_prompt = dedent(f"""
-你是一位资深编程导师，请根据以下信息对学生代码进行综合评价，并给出3-5条具体改进建议。
+你是一位资深编程导师，请根据以下信息对学生代码进行综合评价。请**严格按照 Markdown 格式**输出，并且从四个维度（正确性、规范性、效率、可读性）分别给出评价和具体改进建议。最后，提供一段**修改后的规范性代码**（仅针对规范性问题进行重构，不改变原有逻辑），并用代码块包裹。
 
 **题目要求**：{problem_meta.get('description', '无')}
 
@@ -139,16 +139,24 @@ async def grade_code(submission: CodeSubmission):
 综合可读性得分：{readability_raw}/10
 
 请输出以下格式（纯文本，不需要JSON）：
-【总体评价】
-（一段话概括代码质量、优点和主要问题）
+<strong>正确性</strong>
+（评价代码是否通过测试，是否存在逻辑错误等）
 
-【具体改进建议】
+<strong>规范性</strong>
+（指出具体违反了哪些编码规范，例如变量命名、缩进、文档字符串等）
 
-...
+<strong>效率</strong>
+（分析时间复杂度和空间复杂度，给出优化建议）
 
-...
+<strong>可读性</strong>
+（评价命名、结构、注释，提出改进点）
 
-...
+<strong>修改后的规范性代码</strong>
+将上述规范性建议应用到代码中，输出完整的代码块，用中文注释，如下所示：
+```python
+# 重构后的完整代码
+
+请确保修改后的代码可以直接替换原始代码且功能不变。
 """)
     final_feedback = await llm_client.get_combined_feedback(final_prompt, model="deepseek/deepseek-chat")
     scores_dict = {
